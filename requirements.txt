@@ -1,0 +1,11 @@
+streamlit==1.45.1
+google-cloud-bigquery==3.38.0
+google-cloud-storage==3.4.1
+google-cloud-bigquery-storage==2.33.1
+langchain==1.0.1
+langchain-google-genai==3.0.0
+langchain-openai==1.0.0
+pandas==2.2.2
+pyarrow==20.0.0
+python-dotenv==1.1.1
+db-dtypes==1.4.3
