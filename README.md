@@ -65,18 +65,19 @@ graph TD
     
     %% Legend %%
     subgraph Legend[Legend]
-        direction TB
+        direction LR
         L1[📱 = User Interface Component]
         L2[🤖 = AI/Processing Component]
         L3[☁️ = External Service]
         L4[🔐 = Security/Configuration]
         L5[📋 = Data Structure]
-        style L1 fill:#E8F5E9,stroke:#388E3C,stroke-width:1px
-        style L2 fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
-        style L3 fill:#FFF8E1,stroke:#FF8F00,stroke-width:1px
-        style L4 fill:#E8EAF6,stroke:#303F9F,stroke-width:1px
-        style L5 fill:#E1F5FE,stroke:#0288D1,stroke-width:1px
     end
+    
+    style L1 fill:#E8F5E9,stroke:#388E3C,stroke-width:1px
+    style L2 fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
+    style L3 fill:#FFF8E1,stroke:#FF8F00,stroke-width:1px
+    style L4 fill:#E8EAF6,stroke:#303F9F,stroke-width:1px
+    style L5 fill:#E1F5FE,stroke:#0288D1,stroke-width:1px
 ```
 
 ## 🔄 Data Flow Process
