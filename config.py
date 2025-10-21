@@ -18,6 +18,3 @@ class Config:
     
     # Cache Configuration
     SCHEMA_CACHE_TTL = int(os.getenv("SCHEMA_CACHE_TTL", 3600))  # 1 hour in seconds
-    
-    # LLM Provider Configuration
-    LLM_PROVIDER = os.getenv("LLM_PROVIDER", "google")  # Options: "google", "openai", etc.

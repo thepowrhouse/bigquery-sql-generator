@@ -1,6 +1,14 @@
-# BigQuery SQL Generator with AI
+# BigQuery SQL Generator with AI (ADK BigQuery Tools)
 
-This application allows you to interact with your Google BigQuery database using natural language queries. The AI agent translates your questions into SQL queries and executes them against your BigQuery dataset.
+This application allows you to interact with your Google BigQuery database using natural language queries. The AI agent translates your questions into SQL queries and executes them against your BigQuery dataset using Google ADK BigQuery tools for simplified database interactions.
+
+## Architecture
+
+The application follows a simplified architecture with Google ADK BigQuery tools for database interactions:
+
+- **View**: Streamlit frontend
+- **Controller**: SQL generation agent
+- **Model**: BigQuery client with Google ADK BigQuery tools integration
 
 ## Setup
 
@@ -27,7 +35,7 @@ This application allows you to interact with your Google BigQuery database using
    
    Then edit the `.env` file with your configuration:
    - Set your Google Cloud project ID and dataset ID
-   - Add your Gemini API key (or OpenAI API key if using OpenAI)
+   - Add your Gemini API key
    - Adjust other settings as needed
 
 5. **Authenticate with Google Cloud:**
@@ -52,7 +60,7 @@ This application allows you to interact with your Google BigQuery database using
    Visit `http://localhost:8501` to access the application.
 
 4. **Ask questions:**
-   Type your questions about the data in the chat input and the AI agent will generate and execute SQL queries.
+   Type your questions about the data in the chat input and the AI agent will generate and execute SQL queries using Google ADK BigQuery tools.
 
 ## Configuration
 
@@ -60,38 +68,29 @@ All configuration is managed through environment variables in the `.env` file:
 
 - `PROJECT_ID`: Your Google Cloud project ID
 - `DATASET_ID`: Your BigQuery dataset ID
-- `LLM_PROVIDER`: The LLM provider to use (`google` or `openai`)
-- `MODEL_NAME`: The specific model to use
-- `TEMPERATURE`: The temperature setting for the LLM
-- `GEMINI_API_KEY`: Your Gemini API key (if using Google)
-- `OPENAI_API_KEY`: Your OpenAI API key (if using OpenAI)
-- `SCHEMA_CACHE_TTL`: How long to cache the database schema (in seconds)
+- `MODEL_NAME`: The specific Gemini model to use (default: gemini-2.5-flash)
+- `TEMPERATURE`: The temperature setting for the LLM (default: 0)
+- `GEMINI_API_KEY`: Your Gemini API key
+- `SCHEMA_CACHE_TTL`: How long to cache the database schema (in seconds, default: 3600)
 
-## LLM Providers
+## Google ADK BigQuery Tools
 
-The application supports multiple LLM providers:
+This application uses Google ADK (Application Development Kit) BigQuery tools for database interactions, which provides:
 
-### Google Gemini
-- Set `LLM_PROVIDER=google`
-- Set `MODEL_NAME` to a Gemini model (e.g., `gemini-2.5-flash`)
-- Add your `GEMINI_API_KEY`
+- Simplified BigQuery operations through built-in toolset
+- Built-in security features with write protection
+- Context-aware query execution
+- Error handling and logging
 
-### OpenAI
-- Set `LLM_PROVIDER=openai`
-- Set `MODEL_NAME` to an OpenAI model (e.g., `gpt-4-turbo`)
-- Add your `OPENAI_API_KEY`
-
-## Troubleshooting
-
-If you encounter any issues, make sure you have all the required dependencies installed:
-- `db-dtypes` - Required for BigQuery to work properly with pandas DataFrames
-- `google-cloud-bigquery-storage` - Optional but recommended for better performance when fetching large amounts of data from BigQuery
+The BigQueryToolset is configured with WriteMode.BLOCKED to prevent destructive operations.
 
 ## File Structure
 
 - `main.py` - Entry point for the Streamlit application
 - `sql_generation_agent.py` - AI agent that generates SQL queries from natural language
-- `bigquery_client.py` - Handles communication with Google BigQuery
+- `mcp_client.py` - BigQuery client with ADK BigQuery tools integration
+- `bigquery_tools.py` - BigQuery tools leveraging ADK BigQuery tools
+- `adk_config.py` - Configuration for Google ADK tools
 - `config.py` - Configuration management
 - `models.py` - Data models
 - `requirements.txt` - Python dependencies
