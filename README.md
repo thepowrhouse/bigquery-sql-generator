@@ -10,6 +10,85 @@ The application follows a simplified architecture with Google ADK BigQuery tools
 - **Controller**: SQL generation agent
 - **Model**: BigQuery client with Google ADK BigQuery tools integration
 
+## System Design
+
+```mermaid
+graph TD
+    %% User Interface Layer %%
+    User[👨‍💼 User] --> |Asks questions in natural language| WebApp[📱 Streamlit Web App<br/>main.py]
+    
+    %% Application Layer %%
+    WebApp --> |Sends user query| SQLAgent[🤖 SQL Generation Agent<br/>sql_generation_agent.py]
+    WebApp --> |Requests data operations| DBClient[🔌 BigQuery Client<br/>mcp_client.py]
+    
+    %% AI Processing %%
+    SQLAgent --> |Uses LLM| Gemini[(🧠 Google Gemini<br/>via LangChain)]
+    SQLAgent --> |Parses structured output| Models[📋 Data Models<br/>models.py]
+    
+    %% Configuration %%
+    Config[⚙️ Configuration<br/>config.py] --> SQLAgent
+    Config --> DBClient
+    EnvVars[🔑 Environment Variables<br/>.env] --> Config
+    
+    %% Database Layer %%
+    DBClient --> |Executes queries| BQTools[🔧 BigQuery Tools<br/>bigquery_tools.py]
+    BQTools --> |Connects securely| BigQuery[(☁️ Google BigQuery)]
+    
+    %% Security & Configuration %%
+    ADKConfig[🛡️ ADK Configuration<br/>adk_config.py] --> BQTools
+    BigQuery --> |Returns data| DBClient
+    DBClient --> |Returns results| WebApp
+    
+    %% Data Flow Annotations %%
+    linkStyle 0 stroke:#4CAF50,stroke-width:2px
+    linkStyle 1 stroke:#2196F3,stroke-width:2px
+    linkStyle 2 stroke:#FF9800,stroke-width:2px
+    linkStyle 3 stroke:#9C27B0,stroke-width:2px
+    linkStyle 4 stroke:#607D8B,stroke-width:2px
+    linkStyle 5 stroke:#795548,stroke-width:2px
+    linkStyle 6 stroke:#E91E63,stroke-width:2px
+    linkStyle 7 stroke:#FF5722,stroke-width:2px
+    linkStyle 8 stroke:#3F51B5,stroke-width:2px
+    
+    %% Component Styling %%
+    style User fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    style WebApp fill:#E8F5E9,stroke:#388E3C,stroke-width:2px
+    style SQLAgent fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    style Gemini fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
+    style Models fill:#E1F5FE,stroke:#0288D1,stroke-width:2px
+    style Config fill:#FBE9E7,stroke:#DD2C00,stroke-width:2px
+    style EnvVars fill:#E0F2F1,stroke:#00796B,stroke-width:2px
+    style DBClient fill:#E0F7FA,stroke:#0097A7,stroke-width:2px
+    style BQTools fill:#F1F8E9,stroke:#689F38,stroke-width:2px
+    style BigQuery fill:#FFF8E1,stroke:#FF8F00,stroke-width:2px
+    style ADKConfig fill:#E8EAF6,stroke:#303F9F,stroke-width:2px
+    
+    %% Legend %%
+    subgraph Legend[Legend]
+        direction TB
+        L1[📱 = User Interface Component]
+        L2[🤖 = AI/Processing Component]
+        L3[☁️ = External Service]
+        L4[🔐 = Security/Configuration]
+        L5[📋 = Data Structure]
+        style L1 fill:#E8F5E9,stroke:#388E3C,stroke-width:1px
+        style L2 fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
+        style L3 fill:#FFF8E1,stroke:#FF8F00,stroke-width:1px
+        style L4 fill:#E8EAF6,stroke:#303F9F,stroke-width:1px
+        style L5 fill:#E1F5FE,stroke:#0288D1,stroke-width:1px
+    end
+```
+
+## 🔄 Data Flow Process
+
+1. **User Input**: User asks a question in natural language
+2. **AI Processing**: SQL Agent converts the question to SQL using Gemini
+3. **Validation**: BigQuery Client validates the generated SQL
+4. **Execution**: BigQuery Tools execute the query against BigQuery
+5. **Results**: Data is returned and displayed to the user
+
+This architecture ensures a clean separation of concerns, security through configuration, and a smooth user experience for natural language database querying.
+
 ## Setup
 
 1. **Create a virtual environment:**
