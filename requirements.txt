@@ -5,6 +5,7 @@ google-cloud-bigquery-storage==2.33.1
 google-adk==1.16.0
 langchain==1.0.1
 langchain-google-genai==3.0.0
+langchain-openai==1.0.0
 pandas==2.2.2
 pyarrow==20.0.0
 python-dotenv==1.1.1

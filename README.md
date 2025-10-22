@@ -83,7 +83,7 @@ graph TD
 ## 🔄 Data Flow Process
 
 1. **User Input**: User asks a question in natural language
-2. **AI Processing**: SQL Agent converts the question to SQL using Gemini
+2. **AI Processing**: SQL Agent converts the question to SQL using the configured LLM
 3. **Validation**: BigQuery Client validates the generated SQL
 4. **Execution**: BigQuery Tools execute the query against BigQuery
 5. **Results**: Data is returned and displayed to the user
@@ -115,7 +115,9 @@ This architecture ensures a clean separation of concerns, security through confi
    
    Then edit the `.env` file with your configuration:
    - Set your Google Cloud project ID and dataset ID
-   - Add your Gemini API key
+   - Choose your LLM provider (`google` or `openai`)
+   - Set your model name (e.g., `gemini-2.5-flash` or `gpt-4-turbo`)
+   - Add your API key for the chosen provider
    - Adjust other settings as needed
 
 5. **Authenticate with Google Cloud:**
@@ -148,10 +150,26 @@ All configuration is managed through environment variables in the `.env` file:
 
 - `PROJECT_ID`: Your Google Cloud project ID
 - `DATASET_ID`: Your BigQuery dataset ID
-- `MODEL_NAME`: The specific Gemini model to use (default: gemini-2.5-flash)
+- `LLM_PROVIDER`: The LLM provider to use (`google` or `openai`)
+- `MODEL_NAME`: The specific model to use (e.g., `gemini-2.5-flash` or `gpt-4-turbo`)
 - `TEMPERATURE`: The temperature setting for the LLM (default: 0)
-- `GEMINI_API_KEY`: Your Gemini API key
+- `GEMINI_API_KEY`: Your Gemini API key (if using Google)
+- `OPENAI_API_KEY`: Your OpenAI API key (if using OpenAI)
 - `SCHEMA_CACHE_TTL`: How long to cache the database schema (in seconds, default: 3600)
+
+## LLM Providers
+
+The application supports multiple LLM providers:
+
+### Google Gemini
+- Set `LLM_PROVIDER=google`
+- Set `MODEL_NAME` to a Gemini model (e.g., `gemini-2.5-flash`)
+- Add your `GEMINI_API_KEY`
+
+### OpenAI
+- Set `LLM_PROVIDER=openai`
+- Set `MODEL_NAME` to an OpenAI model (e.g., `gpt-4-turbo`)
+- Add your `OPENAI_API_KEY`
 
 ## Google ADK BigQuery Tools
 

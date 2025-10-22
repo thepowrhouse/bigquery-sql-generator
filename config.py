@@ -10,11 +10,13 @@ class Config:
     DATASET_ID = os.getenv("DATASET_ID")
     
     # AI Model Configuration
+    LLM_PROVIDER = os.getenv("LLM_PROVIDER", "google")  # Default to Google
     MODEL_NAME = os.getenv("MODEL_NAME")
     TEMPERATURE = float(os.getenv("TEMPERATURE", 0))
     
     # API Keys (from environment variables)
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
     
     # Cache Configuration
     SCHEMA_CACHE_TTL = int(os.getenv("SCHEMA_CACHE_TTL", 3600))  # 1 hour in seconds

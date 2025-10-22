@@ -1,6 +1,8 @@
 import streamlit as st
+import os
 from typing import Dict, Any, Optional
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_core.output_parsers import JsonOutputParser
@@ -9,31 +11,30 @@ from config import Config
 
 
 class SQLGenerationAgent:
-    """Handles AI-powered SQL query generation using Google Gemini."""
+    """Handles AI-powered SQL query generation using configurable LLMs."""
 
     def __init__(self, schema_prefix: str):
         self.schema_prefix = schema_prefix
         self.model_name = Config.MODEL_NAME or "gemini-2.5-flash"  # Default model
         self.temperature = Config.TEMPERATURE
+        self.provider = Config.LLM_PROVIDER or "google"  # Default provider
 
         # Validate configuration
         if not self.model_name:
             st.error("MODEL_NAME must be set in the .env file.")
             st.stop()
-
-    def generate_sql_query(self, user_question: str, schema_text: str) -> Optional[str]:
-        """Uses LangChain and Google Gemini to generate a SQL query."""
-        if not Config.GEMINI_API_KEY:
-            st.error("GEMINI_API_KEY must be set in the .env file.")
+        
+        if not self.provider:
+            st.error("LLM_PROVIDER must be set in the .env file.")
             st.stop()
 
-        # Initialize the Google LLM
-        llm = ChatGoogleGenerativeAI(
-            model=self.model_name, 
-            temperature=self.temperature,
-            google_api_key=Config.GEMINI_API_KEY,
-            transport="rest"
-        )
+    def generate_sql_query(self, user_question: str, schema_text: str) -> Optional[str]:
+        """Uses LangChain and a configurable LLM to generate a SQL query."""
+        if not self._validate_api_key():
+            return None
+
+        # Initialize the appropriate LLM based on configuration
+        llm = self._initialize_llm()
 
         system_message = self._create_system_message()
         human_message = self._create_human_message(user_question, schema_text)
@@ -47,6 +48,54 @@ class SQLGenerationAgent:
         chain = prompt | llm | parser
 
         return self._execute_chain(chain)
+
+    def _initialize_llm(self):
+        """Initialize the appropriate LLM based on the configured provider."""
+        if self.provider == "google":
+            if not Config.GEMINI_API_KEY:
+                st.error("GEMINI_API_KEY must be set in the .env file for Google provider.")
+                st.stop()
+            return ChatGoogleGenerativeAI(
+                model=self.model_name, 
+                temperature=self.temperature,
+                google_api_key=Config.GEMINI_API_KEY,
+                transport="rest"
+            )
+        elif self.provider == "openai":
+            openai_api_key = os.getenv("OPENAI_API_KEY")
+            if not openai_api_key:
+                st.error("OPENAI_API_KEY must be set in the .env file for OpenAI provider.")
+                st.stop()
+            # type: ignore
+            return ChatOpenAI(
+                model=self.model_name,
+                temperature=self.temperature,
+                api_key=openai_api_key  # type: ignore
+            )
+        else:
+            st.error(f"Unsupported LLM provider: {self.provider}. Supported providers are 'google' and 'openai'.")
+            st.stop()
+
+    def _validate_api_key(self) -> bool:
+        """Validate that the required API key is set based on the provider."""
+        if self.provider == "google":
+            api_key = Config.GEMINI_API_KEY
+            if not api_key:
+                st.error("GEMINI_API_KEY must be set in the .env file.")
+                return False
+            # Check if API key has the expected format (AIza followed by 33 characters)
+            if not api_key.startswith("AIza") or len(api_key) < 30:
+                st.error("GEMINI_API_KEY appears to be invalid.")
+                return False
+        elif self.provider == "openai":
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                st.error("OPENAI_API_KEY must be set in the .env file.")
+                return False
+        else:
+            st.error(f"Unsupported LLM provider: {self.provider}")
+            return False
+        return True
 
     def _create_system_message(self) -> str:
         """Create the system message for the AI agent."""
