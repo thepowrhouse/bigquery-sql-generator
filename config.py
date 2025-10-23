@@ -14,6 +14,10 @@ class Config:
     MODEL_NAME = os.getenv("MODEL_NAME")
     TEMPERATURE = float(os.getenv("TEMPERATURE", 0))
     
+    # LLM Base URLs for custom endpoints
+    GOOGLE_BASE_URL = os.getenv("GOOGLE_BASE_URL")
+    OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
+    
     # API Keys (from environment variables)
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

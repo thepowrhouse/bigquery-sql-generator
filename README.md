@@ -118,6 +118,7 @@ This architecture ensures a clean separation of concerns, security through confi
    - Choose your LLM provider (`google` or `openai`)
    - Set your model name (e.g., `gemini-2.5-flash` or `gpt-4-turbo`)
    - Add your API key for the chosen provider
+   - Optionally configure custom LLM base URLs for self-hosted models
    - Adjust other settings as needed
 
 5. **Authenticate with Google Cloud:**
@@ -153,6 +154,8 @@ All configuration is managed through environment variables in the `.env` file:
 - `LLM_PROVIDER`: The LLM provider to use (`google` or `openai`)
 - `MODEL_NAME`: The specific model to use (e.g., `gemini-2.5-flash` or `gpt-4-turbo`)
 - `TEMPERATURE`: The temperature setting for the LLM (default: 0)
+- `GOOGLE_BASE_URL`: Custom base URL for Google models (optional)
+- `OPENAI_BASE_URL`: Custom base URL for OpenAI models (optional)
 - `GEMINI_API_KEY`: Your Gemini API key (if using Google)
 - `OPENAI_API_KEY`: Your OpenAI API key (if using OpenAI)
 - `SCHEMA_CACHE_TTL`: How long to cache the database schema (in seconds, default: 3600)
@@ -165,11 +168,28 @@ The application supports multiple LLM providers:
 - Set `LLM_PROVIDER=google`
 - Set `MODEL_NAME` to a Gemini model (e.g., `gemini-2.5-flash`)
 - Add your `GEMINI_API_KEY`
+- Optionally set `GOOGLE_BASE_URL` for custom endpoints
 
 ### OpenAI
 - Set `LLM_PROVIDER=openai`
 - Set `MODEL_NAME` to an OpenAI model (e.g., `gpt-4-turbo`)
 - Add your `OPENAI_API_KEY`
+- Optionally set `OPENAI_BASE_URL` for custom endpoints
+
+## Custom/Local LLM Support
+
+You can connect to custom or locally hosted LLMs by setting the appropriate base URL:
+
+### For Google Models:
+```
+GOOGLE_BASE_URL=http://localhost:8080/v1  # Example for a local Google model server
+```
+
+### For OpenAI-Compatible Models:
+```
+OPENAI_BASE_URL=http://localhost:11434/v1  # Example for Ollama
+OPENAI_API_KEY=sk-anything  # Some local models don't require a real key
+```
 
 ## Google ADK BigQuery Tools
 

@@ -55,23 +55,39 @@ class SQLGenerationAgent:
             if not Config.GEMINI_API_KEY:
                 st.error("GEMINI_API_KEY must be set in the .env file for Google provider.")
                 st.stop()
-            return ChatGoogleGenerativeAI(
-                model=self.model_name, 
-                temperature=self.temperature,
-                google_api_key=Config.GEMINI_API_KEY,
-                transport="rest"
-            )
+            
+            # Prepare parameters for Google LLM
+            google_params = {
+                "model": self.model_name,
+                "temperature": self.temperature,
+                "google_api_key": Config.GEMINI_API_KEY,
+                "transport": "rest"
+            }
+            
+            # Add custom base URL if provided
+            if Config.GOOGLE_BASE_URL:
+                google_params["api_endpoint"] = Config.GOOGLE_BASE_URL
+            
+            return ChatGoogleGenerativeAI(**google_params)
+            
         elif self.provider == "openai":
             openai_api_key = os.getenv("OPENAI_API_KEY")
             if not openai_api_key:
                 st.error("OPENAI_API_KEY must be set in the .env file for OpenAI provider.")
                 st.stop()
-            # type: ignore
-            return ChatOpenAI(
-                model=self.model_name,
-                temperature=self.temperature,
-                api_key=openai_api_key  # type: ignore
-            )
+            
+            # Prepare parameters for OpenAI LLM
+            openai_params = {
+                "model": self.model_name,
+                "temperature": self.temperature,
+                "api_key": openai_api_key  # type: ignore
+            }
+            
+            # Add custom base URL if provided
+            if Config.OPENAI_BASE_URL:
+                openai_params["base_url"] = Config.OPENAI_BASE_URL
+            
+            return ChatOpenAI(**openai_params)
         else:
             st.error(f"Unsupported LLM provider: {self.provider}. Supported providers are 'google' and 'openai'.")
             st.stop()
